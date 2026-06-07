@@ -157,6 +157,7 @@ select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(47
 .modal-backdrop{position:fixed;inset:0;z-index:var(--z-overlay);background:rgba(31,42,40,.55);
   backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:24px;
   opacity:0;animation:fadein .18s ease forwards}
+.modal-backdrop[hidden]{display:none!important}
 @keyframes fadein{to{opacity:1}}
 .modal{background:var(--surface);border-radius:18px;box-shadow:var(--shadow-lg);max-width:920px;width:100%;
   max-height:90vh;overflow:hidden;display:flex;flex-direction:column;position:relative}
