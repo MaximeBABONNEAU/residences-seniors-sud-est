@@ -23,6 +23,13 @@ Carte interactive + annuaire des **résidences services seniors** en
 | Téléphone | ~100 % |
 | Site officiel | ~87 % |
 | Géolocalisation | 100 % |
+| Galeries photo | 98 résidences · **693 photos** |
+| Services & équipements | 137 résidences |
+| Offres logements (T1/T2/T3…) | 46 résidences |
+| Descriptions détaillées | 151 résidences |
+
+**Fiche détaillée** (clic sur une carte) : galerie photo en carousel, tableau des offres
+(type · surface · prix), services & équipements, description, et tous les contacts.
 
 **Méthodologie** *(100 % données publiques)* :
 
