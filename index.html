@@ -153,6 +153,66 @@ select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(47
 .pop .pacts a{flex:1;text-align:center;font-size:12px;font-weight:600;padding:7px;border-radius:7px;text-decoration:none}
 .pop .pacts .c{background:var(--green);color:#fff}.pop .pacts .w{background:var(--surface-2);color:var(--ink)}
 
+/* ---------- Detail modal ---------- */
+.modal-backdrop{position:fixed;inset:0;z-index:var(--z-overlay);background:rgba(31,42,40,.55);
+  backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:24px;
+  opacity:0;animation:fadein .18s ease forwards}
+@keyframes fadein{to{opacity:1}}
+.modal{background:var(--surface);border-radius:18px;box-shadow:var(--shadow-lg);max-width:920px;width:100%;
+  max-height:90vh;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.modal-close{position:absolute;top:12px;right:12px;z-index:6;width:38px;height:38px;border-radius:50%;
+  border:0;background:rgba(255,255,255,.92);color:var(--ink);display:grid;place-items:center;box-shadow:var(--shadow)}
+.modal-close:hover{background:#fff;color:var(--amber-d)}
+.modal-scroll{overflow-y:auto}
+/* gallery */
+.gal{position:relative;background:#11201c;aspect-ratio:16/9;max-height:380px;overflow:hidden}
+.gal img{width:100%;height:100%;object-fit:cover;display:block;background:var(--surface-2)}
+.gal .gal-ph{width:100%;height:100%;display:grid;place-items:center;color:#fff}
+.gal .gal-ph svg{width:64px;height:64px;opacity:.85}
+.gal-nav{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;border:0;
+  background:rgba(255,255,255,.9);color:var(--ink);font-size:22px;line-height:1;display:grid;place-items:center;
+  box-shadow:var(--shadow);cursor:pointer}
+.gal-nav:hover{background:#fff}.gal-nav.prev{left:12px}.gal-nav.next{right:12px}
+.gal-counter{position:absolute;bottom:12px;right:14px;background:rgba(31,42,40,.7);color:#fff;font-size:12px;
+  padding:3px 10px;border-radius:20px}
+.gal-dots{position:absolute;bottom:12px;left:0;right:0;display:flex;gap:6px;justify-content:center}
+.gal-dots b{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5);cursor:pointer}
+.gal-dots b.on{background:#fff;width:20px;border-radius:4px}
+/* body */
+.modal-body{padding:18px 22px 22px}
+.modal-body .op-badge{font-size:11px}
+.modal-body h2{font-size:24px;letter-spacing:-.01em;margin:5px 0 4px}
+.m-loc{color:var(--muted);font-size:13.5px;display:flex;align-items:center;gap:5px;margin-bottom:10px}
+.m-loc svg{width:15px;height:15px}
+.m-price{font-size:17px;font-weight:700;color:var(--green-d);margin-bottom:14px}
+.m-price small{font-weight:500;color:var(--muted);font-size:13px}
+.m-price.devis{color:var(--muted);font-weight:500;font-size:15px}
+.m-sec{margin:16px 0;border-top:1px solid var(--line);padding-top:14px}
+.m-sec h3{font-family:'Inter';font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 10px;font-weight:700}
+table.offers{width:100%;border-collapse:collapse;font-size:14px}
+table.offers th{text-align:left;font-weight:600;color:var(--muted);font-size:11.5px;text-transform:uppercase;
+  letter-spacing:.04em;padding:0 10px 8px 0}
+table.offers td{padding:9px 10px 9px 0;border-top:1px solid var(--surface-2)}
+table.offers td.t{font-weight:700;color:var(--ink)}
+table.offers td.p{font-weight:700;color:var(--green-d);text-align:right}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink);background:#f0f6f3;
+  border:1px solid #dbe9e3;border-radius:20px;padding:5px 12px}
+.chip svg{width:14px;height:14px;color:var(--green)}
+.m-desc{font-size:14px;line-height:1.65;color:#3a4642}
+.m-contact{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+.m-contact .act{flex:1;min-width:130px;min-height:44px;font-size:13.5px}
+.act.map{background:var(--amber);color:#fff;border-color:transparent}.act.map:hover{background:var(--amber-d)}
+.act.mail{background:var(--surface);color:var(--ink);border-color:var(--line)}.act.mail:hover{border-color:var(--green)}
+.m-foot{margin-top:14px;font-size:11.5px;color:var(--muted)}
+.m-foot a{color:var(--muted)}
+@media (max-width:600px){
+  .modal-backdrop{padding:0}
+  .modal{max-height:100vh;border-radius:0}
+  .modal-body h2{font-size:20px}
+  .gal{aspect-ratio:4/3}
+}
+
 /* ---------- Mobile toggle ---------- */
 .view-toggle{display:none;position:absolute;left:50%;bottom:18px;transform:translateX(-50%);z-index:var(--z-overlay);
   background:var(--ink);color:#fff;border:0;border-radius:30px;padding:12px 22px;font-weight:600;font-size:14px;
@@ -269,6 +329,28 @@ footer .src{margin-left:auto}
   </footer>
 </div>
 
+<div class="modal-backdrop" id="modal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
+    <button class="modal-close" id="m-close" aria-label="Fermer la fiche">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="modal-scroll">
+      <div class="gal" id="m-gal"></div>
+      <div class="modal-body">
+        <span class="op-badge" id="m-op"></span>
+        <h2 id="m-title"></h2>
+        <div class="m-loc" id="m-loc"></div>
+        <div class="m-price" id="m-price"></div>
+        <div class="m-sec" id="m-offers-sec" hidden><h3>Logements &amp; tarifs</h3><div id="m-offers"></div></div>
+        <div class="m-sec" id="m-serv-sec" hidden><h3>Services &amp; équipements</h3><div class="chips" id="m-services"></div></div>
+        <div class="m-sec" id="m-desc-sec" hidden><h3>Présentation</h3><p class="m-desc" id="m-desc"></p></div>
+        <div class="m-contact" id="m-contact"></div>
+        <div class="m-foot" id="m-foot"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
@@ -326,15 +408,15 @@ function popupHTML(r){
   const c=opColor(r.operator);
   const img=r.photo?`<img src="${esc(r.photo)}" alt="${esc(r.name)}" loading="lazy" onerror="this.outerHTML='<div class=&quot;pop-ph&quot; style=&quot;background:${c}&quot;>'+\`${houseSVG()}\`+'</div>'">`
     :`<div class="pop-ph" style="background:${c}">${houseSVG()}</div>`;
-  const tel=r.phone?`<a class="c" href="tel:${esc(r.phone)}">Appeler</a>`:'';
-  const web=r.website?`<a class="w" href="${esc(r.website)}" target="_blank" rel="noopener">Site</a>`
-    :`<a class="w" href="${esc(r.source_url)}" target="_blank" rel="noopener">Fiche</a>`;
+  const det=`<a class="c" href="#" onclick="openDetail(${r.id});return false">Voir la fiche</a>`;
+  const tel=r.phone?`<a class="w" href="tel:${esc(r.phone)}">Appeler</a>`
+    :`<a class="w" href="${esc(r.website||r.source_url)}" target="_blank" rel="noopener">Site</a>`;
   return `<div class="pop">${img}<div class="pop-body">
     <span class="op" style="background:${c}">${esc(r.operator)}</span>
     <h3>${esc(r.name)}</h3>
     <div class="pl">${esc(r.city||'')} (${r.dept}) · ${esc(r.address)}</div>
     <div class="pp ${r.price_from?'':'devis'}">${priceLabel(r)}</div>
-    <div class="pacts">${tel}${web}</div></div></div>`;
+    <div class="pacts">${det}${tel}</div></div></div>`;
 }
 
 function cardHTML(r){
@@ -390,8 +472,8 @@ function renderList(){
   el.innerHTML=FILTERED.map(cardHTML).join('');
   el.querySelectorAll('.card').forEach(c=>{
     const id=+c.dataset.id;
-    c.addEventListener('click',()=>focusRes(id,true));
-    c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();focusRes(id,true);}});
+    c.addEventListener('click',()=>openDetail(id));
+    c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openDetail(id);}});
   });
 }
 
@@ -456,6 +538,74 @@ toggle.addEventListener('click',()=>{document.getElementById('body').classList.t
   if(document.getElementById('body').classList.contains('show-map'))setTimeout(()=>map.invalidateSize(),60);});
 function syncToggle(){const m=document.getElementById('body').classList.contains('show-map');
   document.getElementById('toggle-lbl').textContent=m?'Voir la liste':'Voir la carte';}
+
+// ---- detail modal ----
+const $=(id)=>document.getElementById(id);
+const TICK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+const phoneSVG='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.1 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>';
+const webSVG='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>';
+const pinSVG='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+let galImgs=[], galIdx=0, galColor='#2f6f5e';
+
+function renderGallery(){
+  const g=$('m-gal');
+  if(!galImgs.length){ g.innerHTML='<div class="gal-ph" style="background:'+galColor+'">'+houseSVG()+'</div>'; return; }
+  const multi=galImgs.length>1;
+  g.innerHTML='<img id="m-img" src="'+esc(galImgs[galIdx])+'" alt="Photo de la résidence" loading="lazy" onerror="this.style.visibility=\'hidden\'">'
+    +(multi?'<button class="gal-nav prev" aria-label="Photo précédente">‹</button><button class="gal-nav next" aria-label="Photo suivante">›</button>':'')
+    +(multi?'<div class="gal-counter">'+(galIdx+1)+' / '+galImgs.length+'</div>':'')
+    +(multi&&galImgs.length<=10?'<div class="gal-dots">'+galImgs.map((_,i)=>'<b class="'+(i===galIdx?'on':'')+'" data-i="'+i+'"></b>').join('')+'</div>':'');
+  if(multi){
+    g.querySelector('.prev').onclick=()=>{galIdx=(galIdx-1+galImgs.length)%galImgs.length;renderGallery();};
+    g.querySelector('.next').onclick=()=>{galIdx=(galIdx+1)%galImgs.length;renderGallery();};
+    g.querySelectorAll('.gal-dots b').forEach(b=>b.onclick=()=>{galIdx=+b.dataset.i;renderGallery();});
+  }
+}
+function offersHTML(r){
+  const byType={};
+  (r.offers||[]).forEach(o=>{if(o&&o.type)byType[o.type]={surface:o.surface,price:o.price};});
+  Object.entries(r.prices||{}).forEach(([t,p])=>{byType[t]=byType[t]||{};if(byType[t].price==null)byType[t].price=p;});
+  const order=['Studio','T1','T2','T3','T4','T5','F1','F2','F3','F4'];
+  const keys=Object.keys(byType).sort((a,b)=>order.indexOf(a)-order.indexOf(b));
+  if(!keys.length) return '';
+  let h='<table class="offers"><tr><th>Type</th><th>Surface</th><th style="text-align:right">À partir de</th></tr>';
+  keys.forEach(t=>{const o=byType[t];h+='<tr><td class="t">'+esc(t)+'</td><td>'+(o.surface?o.surface+' m²':'—')+'</td><td class="p">'+(o.price?o.price.toLocaleString('fr-FR')+' '+esc(r.price_unit||'€'):'sur devis')+'</td></tr>';});
+  return h+'</table>';
+}
+function openDetail(id){
+  const r=ALL.find(x=>x.id===id); if(!r) return;
+  galColor=opColor(r.operator);
+  galImgs=(r.gallery&&r.gallery.length)?r.gallery.slice():(r.photo?[r.photo]:[]); galIdx=0;
+  renderGallery();
+  $('m-op').textContent=r.operator; $('m-op').style.background=opColor(r.operator);
+  $('m-title').textContent=r.name;
+  $('m-loc').innerHTML=pinSVG+' '+esc(r.address);
+  const pr=$('m-price'); pr.className='m-price '+(r.price_from?'':'devis'); pr.innerHTML=priceLabel(r);
+  const oh=offersHTML(r); $('m-offers-sec').hidden=!oh; $('m-offers').innerHTML=oh;
+  const sv=r.services||[]; $('m-serv-sec').hidden=!sv.length;
+  $('m-services').innerHTML=sv.map(s=>'<span class="chip">'+TICK+esc(s)+'</span>').join('');
+  const dsc=(r.description_long||r.desc||''); $('m-desc-sec').hidden=!dsc; $('m-desc').textContent=dsc;
+  const c=[];
+  if(r.phone)c.push('<a class="act call" href="tel:'+esc(r.phone)+'">'+phoneSVG+' '+fmtPhone(r.phone)+'</a>');
+  if(r.website)c.push('<a class="act web" href="'+esc(r.website)+'" target="_blank" rel="noopener">'+webSVG+' Site officiel</a>');
+  if(r.email)c.push('<a class="act mail" href="mailto:'+esc(r.email)+'">✉ E-mail</a>');
+  c.push('<a class="act map" href="#" id="m-locate">'+pinSVG+' Voir sur la carte</a>');
+  $('m-contact').innerHTML=c.join('');
+  const loc=$('m-locate'); if(loc)loc.onclick=(e)=>{e.preventDefault();closeDetail();focusRes(id,false);};
+  $('m-foot').innerHTML='Source : <a href="'+esc(r.source_url)+'" target="_blank" rel="noopener">fiche annuaire</a>'+(r.crawl_date?' · données du '+esc(r.crawl_date):'');
+  const m=$('modal'); m.hidden=false; m.querySelector('.modal-scroll').scrollTop=0; document.body.style.overflow='hidden';
+  $('m-close').focus();
+}
+function closeDetail(){$('modal').hidden=true; document.body.style.overflow='';}
+window.openDetail=openDetail;
+$('m-close').addEventListener('click',closeDetail);
+$('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeDetail();});
+document.addEventListener('keydown',e=>{
+  if($('modal').hidden) return;
+  if(e.key==='Escape')closeDetail();
+  else if(e.key==='ArrowLeft'&&galImgs.length>1){galIdx=(galIdx-1+galImgs.length)%galImgs.length;renderGallery();}
+  else if(e.key==='ArrowRight'&&galImgs.length>1){galIdx=(galIdx+1)%galImgs.length;renderGallery();}
+});
 
 // ---- load data ----
 fetch('data/residences.json',{cache:'no-store'}).then(r=>r.json()).then(init).catch(err=>{

@@ -57,6 +57,7 @@ PER_PAGE = 25
 EVAL_LIST = (Path(__file__).parent / "extract_list.js").read_text(encoding="utf-8")
 EVAL_DETAIL = (Path(__file__).parent / "extract_detail.js").read_text(encoding="utf-8")
 EVAL_ENRICH = (Path(__file__).parent / "extract_enrich.js").read_text(encoding="utf-8")
+EVAL_DEEP = (Path(__file__).parent / "extract_deep.js").read_text(encoding="utf-8")
 
 # Détection d'opérateur à partir du nom (substring, insensible à la casse).
 OPERATORS = [
@@ -349,6 +350,65 @@ def stage_enrich():
           f"phone:{sum(1 for r in data if r['phone'])}/{tot}")
 
 
+def stage_deep(limit=None):
+    print("== STAGE deep (official sites -> gallery / offers / services / description) ==")
+    out_path = ROOT / "data" / "residences.json"
+    data = json.load(open(out_path, encoding="utf-8"))
+    targets = [r for r in data if r.get("website")]
+    if limit:
+        targets = targets[:limit]
+    urls = [r["website"] for r in targets]
+    print(f"Deep-crawling {len(urls)} official sites (concurrency 8)...")
+    t0 = time.time()
+    res = obscura_scrape(urls, EVAL_DEEP, concurrency=8, timeout=50)
+    failed = [u for u in urls if not res.get(u)]
+    if failed:
+        print(f"  retrying {len(failed)} failed...")
+        res.update({k: v for k, v in obscura_scrape(failed, EVAL_DEEP, 5, 55).items() if v})
+    print(f"  done in {int(time.time()-t0)}s")
+
+    up_gal = up_off = up_serv = up_desc = up_photo = 0
+    for r in targets:
+        ev = res.get(r["website"])
+        if not ev:
+            r.setdefault("gallery", []); r.setdefault("offers", [])
+            r.setdefault("services", []); r.setdefault("description_long", "")
+            continue
+        try:
+            d = json.loads(ev)
+        except json.JSONDecodeError:
+            d = {}
+        gallery = [g for g in (d.get("gallery") or []) if g][:12]
+        r["gallery"] = gallery
+        r["offers"] = d.get("offers") or []
+        r["services"] = d.get("services") or []
+        r["description_long"] = (d.get("description") or "").strip()
+        if gallery:
+            up_gal += 1
+        if r["offers"]:
+            up_off += 1
+        if r["services"]:
+            up_serv += 1
+        if r["description_long"]:
+            up_desc += 1
+        # promote first gallery image to the card photo if missing
+        if gallery and not r.get("photo"):
+            r["photo"] = gallery[0]; up_photo += 1
+    # ensure all rows have the new keys (even those without a website)
+    for r in data:
+        r.setdefault("gallery", []); r.setdefault("offers", [])
+        r.setdefault("services", []); r.setdefault("description_long", "")
+    json.dump(data, open(out_path, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    tot = len(data)
+    print(f"\nDeep results  +gallery:{up_gal}  +offers:{up_off}  +services:{up_serv}  +desc:{up_desc}  +photo:{up_photo}")
+    print(f"Coverage  gallery:{sum(1 for r in data if r.get('gallery'))}/{tot}  "
+          f"services:{sum(1 for r in data if r.get('services'))}/{tot}  "
+          f"photo:{sum(1 for r in data if r.get('photo'))}/{tot}  "
+          f"offers:{sum(1 for r in data if r.get('offers'))}/{tot}")
+    galn = sum(len(r.get('gallery', [])) for r in data)
+    print(f"Total gallery images: {galn}")
+
+
 if __name__ == "__main__":
     stage = sys.argv[1] if len(sys.argv) > 1 else "list"
     if stage == "list":
@@ -360,5 +420,8 @@ if __name__ == "__main__":
         stage_detail(lim)
     elif stage == "enrich":
         stage_enrich()
+    elif stage == "deep":
+        lim = int(sys.argv[2]) if len(sys.argv) > 2 else None
+        stage_deep(lim)
     else:
         print(f"Unknown stage: {stage}")
