@@ -1,0 +1,14 @@
+# Raw crawl artifacts (large HTML dumps, intermediate JSON, logs)
+data/raw/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Internal planning (not part of the published site)
+progress.md
+findings.md
